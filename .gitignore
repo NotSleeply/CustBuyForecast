@@ -35,6 +35,7 @@ data/
 *.out
 
 # VS Code
+.idea
 .vscode/
 
 # 系统文件
