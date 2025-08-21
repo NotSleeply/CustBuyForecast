@@ -1,0 +1,7 @@
+[project]
+name = "CustBuyForecast"
+version = "0.1.0"
+license = "MIT"
+dependencies = [
+    "ipykernel>=6.30.1",
+]

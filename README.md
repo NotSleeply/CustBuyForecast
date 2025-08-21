@@ -370,7 +370,7 @@ CustBuyForecast/
 - **uv安装**
 
 ```powershell
-1. uv venv --python 3.9  # 创建.venv
-2. uv pip install -r requirements.txt # 安装依赖
-3. .venv\Scripts\activate # 激活环境
+1. uv sync  # 同步依赖
+2. uv add ipykernel # 安装
+3. uv run main.py # 启动项目
 ```
