@@ -29,6 +29,7 @@ data/
 *.feather
 *.pkl
 *.pickle
+*.zip
 
 # 日志和输出
 *.log
