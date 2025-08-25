@@ -314,7 +314,8 @@ CustBuyForecast/
 │
 ├── src/                 # 源代码（Python脚本/模块）
 │
-├── output/              # 输出结果（username.csv）
+├── output/              # 输出结果
+│    └── module          # 提交模型 (username.csv)
 │
 ├── pyproject.toml     	 # Python依赖包列表
 ├── README.md            # 项目说明文档

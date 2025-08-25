@@ -1,108 +1,37 @@
-import numpy as np
-import pandas as pd
-import os
-from tqdm import tqdm_notebook
-import lightgbm as lgb
-import xgboost as xgb
 import warnings
+import pandas as pd
+from src.preprocessing import get_preprocessing, load_data
+from src.recommend import get_high_freq_items, get_item_list
+
+
 warnings.simplefilter(action='ignore', category=FutureWarning)
 warnings.filterwarnings('ignore')
 
-path = './data/'
-item = pd.read_csv(path+'Antai_hackathon_attr.csv')
-test = pd.read_csv(path+'dianshang_test.csv')
-train = pd.read_csv(path+'Antai_hackathon_train.csv')
+# 1. 读取数据
+item, test, train = load_data('./data/')
 
-
-def get_preprocessing(df_):
-    df = df_.copy()
-    df['create_order_time'] = pd.to_datetime(
-        df['create_order_time'], errors='coerce')
-    df['hour'] = df['create_order_time'].dt.hour
-    df['day'] = df['create_order_time'].dt.day
-    df['month'] = df['create_order_time'].dt.month
-    df['year'] = df['create_order_time'].dt.year
-    df['date'] = (df['month'].values - 7) * 31 + df['day']
-    del df['create_order_time']
-    return df
-
+# 2. 预处理
+print("开始数据预处理...")
 train = get_preprocessing(train)
 test = get_preprocessing(test)
+print("数据预处理完成。")
 
-# 高频item_id
-temp = train.loc[train.buyer_country_id == 'xx']
-temp = temp.drop_duplicates(subset=['buyer_admin_id', 'item_id'], keep='first')
-item_cnts = temp.groupby(['item_id']).size().reset_index()
-item_cnts.columns = ['item_id', 'cnts']
-item_cnts = item_cnts.sort_values('cnts', ascending=False)
-items = item_cnts['item_id'].values.tolist()
+# 3. 高频item统计
+print("统计高频item_id...")
+items = get_high_freq_items(train)
+print("高频item_id统计完成。")
 
-# 很多admin的历史行为不够30个item，所以就需要填充够30个
-# 这里使用train下yy的数据构造item_id频次排序，然后依次填充
-def item_fillna(tmp_):
-    tmp = tmp_.copy()
-    l = len(tmp)
-    if l == 30:
-        tmp = tmp
-    elif l < 30:
-        m = 30 - l
-        items_t = items.copy()
-        for i in range(m):
-            for j in range(50):
-                it = items_t.pop(0)
-                if it not in tmp:
-                    tmp.append(it)
-                    break
-    elif l > 30:
-        tmp = tmp[:30]
-
-    return tmp
-
-# 获取top30的item
-def get_item_list(df_):
-    df = df_.copy()
-    dic = {}
-    flag = 0
-    for item in df[['buyer_admin_id', 'item_id']].values:
-        try:
-            dic[item[0]].append(item[1])
-        except:
-            if flag != 0:
-                # 去重
-                tmp = []
-                for i in dic[flag]:
-                    if i not in tmp:
-                        tmp.append(i)
-                # 填充
-                tmp = item_fillna(tmp)
-                dic[flag] = tmp
-
-                print(f"已处理用户：{flag}")
-
-                flag = item[0]
-            else:
-                flag = item[0]
-            dic[item[0]] = [item[1]]
-
-    # 最后一个用户也要去重和填充
-    if flag != 0:
-        tmp = []
-        for i in dic[flag]:
-            if i not in tmp:
-                tmp.append(i)
-        tmp = item_fillna(tmp)
-        dic[flag] = tmp
-        print(f"已处理用户：{flag}")
-
-    return dic
-
-
+# 4. 生成推荐列表
+print("生成用户推荐item列表...")
 test = test.sort_values(['buyer_admin_id', 'irank'])
-dic = get_item_list(test)
+dic = get_item_list(test, items)
+print("用户推荐item列表生成完成。")
 
-# 最终提交
+# 5. 生成提交文件
+print("正在生成提交文件...")
 temp = pd.DataFrame({'lst': dic}).reset_index()
 for i in range(30):
     temp[i] = temp['lst'].apply(lambda x: x[i])
 del temp['lst']
-temp.to_csv('/output/username.csv', index=False, header=False)
+temp.to_csv('./output/username.csv', index=False, header=False)
+print("提交文件已保存为 ./output/username.csv")
