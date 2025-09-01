@@ -6,6 +6,12 @@
 """
 
 def get_high_freq_items(train):
+    """
+    - 函数名: get_high_freq_items
+    - 作用: 获取高频商品
+    - 参数: train - 训练数据集
+    - 返回值: 高频商品列表
+    """
     temp = train.loc[train.buyer_country_id == 'xx']
     temp = temp.drop_duplicates(
         subset=['buyer_admin_id', 'item_id'], keep='first')
@@ -15,8 +21,13 @@ def get_high_freq_items(train):
     items = item_cnts['item_id'].values.tolist()
     return items
 
-
 def item_fillna(tmp_, items):
+    """
+    - 函数名: item_fillna
+    - 作用: 填充用户商品列表
+    - 参数: tmp_ - 用户商品列表, items - 高频商品列表
+    - 返回值: 填充后的用户商品列表
+    """
     tmp = tmp_.copy()
     l = len(tmp)
     if l == 30:
@@ -34,8 +45,13 @@ def item_fillna(tmp_, items):
         tmp = tmp[:30]
     return tmp
 
-
 def get_item_list(df_, items):
+    """
+    - 函数名: get_item_list
+    - 作用: 生成用户商品列表
+    - 参数: df_ - 输入数据, items - 高频商品列表
+    - 返回值: 用户商品列表字典
+    """
     df = df_.copy()
     dic = {}
     flag = 0
