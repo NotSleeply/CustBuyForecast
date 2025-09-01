@@ -1,3 +1,10 @@
+"""
+`recommend.py`  - **推荐系统** 
+1. 获取高频商品
+2. 用户商品列表构建
+3. 商品信息填充
+"""
+
 def get_high_freq_items(train):
     temp = train.loc[train.buyer_country_id == 'xx']
     temp = temp.drop_duplicates(

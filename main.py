@@ -1,3 +1,10 @@
+"""
+`main.py`  - **调度中心** 
+1. 数据预处理
+2. 数据加载
+3. 数据保存
+"""
+
 import warnings
 import pandas as pd
 from src.preprocessing import get_preprocessing, load_data
