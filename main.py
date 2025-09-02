@@ -30,12 +30,11 @@ print("数据预处理完成。")
 # 3. 特征工程
 print("开始特征工程...")
 train = add_features_main(train)
-print(train)
 test = add_features_main(test)
 print("特征工程完成。")
 
 # 4. 推荐算法
-dic = knn_recommend(train, test, n_neighbors=30)
+dic = knn_recommend(train, test)
 
 # 5. 生成提交文件
 save_submission(dic)
