@@ -1,14 +1,15 @@
 """
 `main.py`  - **调度中心** 
-1. 数据预处理
-2. 数据加载
-3. 数据保存
+1. 读取数据
+2. 数据预处理
+3. 推荐算法
+4. 数据保存
 """
 
 import warnings
 import pandas as pd
 from src.preprocessing import get_preprocessing, load_data
-from src.recommend import get_high_freq_items, get_item_list
+from src.knn_recommend import knn_recommend
 
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -23,18 +24,10 @@ train = get_preprocessing(train)
 test = get_preprocessing(test)
 print("数据预处理完成。")
 
-# 3. 高频item统计
-print("统计高频item_id...")
-items = get_high_freq_items(train)
-print("高频item_id统计完成。")
+# 3. 推荐算法
+dic = knn_recommend(train, test, n_neighbors=30)
 
-# 4. 生成推荐列表
-print("生成用户推荐item列表...")
-test = test.sort_values(['buyer_admin_id', 'irank'])
-dic = get_item_list(test, items)
-print("用户推荐item列表生成完成。")
-
-# 5. 生成提交文件
+# 4. 生成提交文件
 print("正在生成提交文件...")
 temp = pd.DataFrame({'lst': dic}).reset_index()
 for i in range(30):

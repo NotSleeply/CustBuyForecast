@@ -5,6 +5,9 @@
 3. 通过频次填充Top30推荐列表
 """
 
+import numpy as np
+
+
 def get_high_freq_items(train):
     """
     - 函数名: get_high_freq_items
@@ -21,19 +24,20 @@ def get_high_freq_items(train):
     items = item_cnts['item_id'].values.tolist()
     return items
 
-def item_fillna(tmp_, items):
+
+def item_fillna(tmp_, items, top_n=30):
     """
     - 函数名: item_fillna
     - 作用: 填充用户商品列表
-    - 参数: tmp_ - 用户商品列表, items - 高频商品列表
+    - 参数: tmp_ - 用户商品列表, items - 高频商品列表, top_n - 填充数量
     - 返回值: 填充后的用户商品列表
     """
     tmp = tmp_.copy()
     l = len(tmp)
-    if l == 30:
+    if l == top_n:
         tmp = tmp
-    elif l < 30:
-        m = 30 - l
+    elif l < top_n:
+        m = top_n - l
         items_t = items.copy()
         for i in range(m):
             for j in range(50):
@@ -41,11 +45,12 @@ def item_fillna(tmp_, items):
                 if it not in tmp:
                     tmp.append(it)
                     break
-    elif l > 30:
-        tmp = tmp[:30]
+    elif l > top_n:
+        tmp = tmp[:top_n]
     return tmp
 
-def get_item_list(df_, items):
+
+def get_item_list(df_, items, top_n=30):
     """
     - 函数名: get_item_list
     - 作用: 生成用户商品列表
@@ -66,7 +71,7 @@ def get_item_list(df_, items):
                     if i not in tmp:
                         tmp.append(i)
                 # 填充
-                tmp = item_fillna(tmp, items)
+                tmp = item_fillna(tmp, items, top_n)
                 dic[flag] = tmp
                 print(f"已处理用户：{flag}")
                 flag = item[0]
@@ -79,7 +84,24 @@ def get_item_list(df_, items):
         for i in dic[flag]:
             if i not in tmp:
                 tmp.append(i)
-        tmp = item_fillna(tmp, items)
+        tmp = item_fillna(tmp, items, top_n)
         dic[flag] = tmp
         print(f"已处理用户：{flag}")
+    return dic
+
+
+def recommend_items_for_users(test, train, top_n=30):
+    """
+    - 函数名: recommend_items_for_users
+    - 作用: 为每个用户推荐商品列表
+    - 参数: test - 测试数据, train - 训练数据, top_n - 推荐数量
+    - 返回值: 用户商品列表字典
+    """
+    print("统计高频item_id...")
+    items = get_high_freq_items(train)
+    print("高频item_id统计完成。")
+    print("生成用户推荐item列表...")
+    test = test.sort_values(['buyer_admin_id', 'irank'])
+    dic = get_item_list(test, items, top_n)
+    print("用户推荐item列表生成完成。")
     return dic
