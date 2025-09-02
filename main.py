@@ -2,14 +2,17 @@
 `main.py`  - **调度中心** 
 1. 读取数据
 2. 数据预处理
-3. 推荐算法
-4. 数据保存
+3. 特征工程
+4. 推荐算法
+5. 数据保存
 """
 
 import warnings
 import pandas as pd
 from src.preprocessing import get_preprocessing, load_data
 from src.knn_recommend import knn_recommend
+from src.feature_engineering import add_features_main
+from src.save_result import save_submission
 
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -24,14 +27,15 @@ train = get_preprocessing(train)
 test = get_preprocessing(test)
 print("数据预处理完成。")
 
-# 3. 推荐算法
+# 3. 特征工程
+print("开始特征工程...")
+train = add_features_main(train)
+print(train)
+test = add_features_main(test)
+print("特征工程完成。")
+
+# 4. 推荐算法
 dic = knn_recommend(train, test, n_neighbors=30)
 
-# 4. 生成提交文件
-print("正在生成提交文件...")
-temp = pd.DataFrame({'lst': dic}).reset_index()
-for i in range(30):
-    temp[i] = temp['lst'].apply(lambda x: x[i])
-del temp['lst']
-temp.to_csv('./output/username.csv', index=False, header=False)
-print("提交文件已保存为 ./output/username.csv")
+# 5. 生成提交文件
+save_submission(dic)
