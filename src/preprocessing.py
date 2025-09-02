@@ -14,6 +14,30 @@ def get_preprocessing(df_):
     - 返回值: 预处理后的数据
     """
     df = df_.copy()
+    df = split_time_get_preprocessing(df)
+
+    return df
+
+
+def del_buyer_country_id(df_):
+    """
+    - 函数名: del_buyer_country_id
+    - 作用: 删除buyer_country_id列
+    - 参数: df_ - 输入数据
+    - 返回值: 删除列后的数据
+    """
+    df = df_.copy()
+    del df['buyer_country_id']
+    return df
+
+def split_time_get_preprocessing(df_):
+    """
+    - 函数名: split_time_get_preprocessing
+    - 作用: 对输入数据进行时间拆分和预处理
+    - 参数: df_ - 输入数据
+    - 返回值: 预处理后的数据
+    """
+    df = df_.copy()
     df['create_order_time'] = pd.to_datetime(
         df['create_order_time'], errors='coerce')
     df['hour'] = df['create_order_time'].dt.hour

@@ -15,8 +15,7 @@ def get_high_freq_items(train):
     - 参数: train - 训练数据集
     - 返回值: 高频商品列表
     """
-    temp = train.loc[train.buyer_country_id == 'xx']
-    temp = temp.drop_duplicates(
+    temp = train.drop_duplicates(
         subset=['buyer_admin_id', 'item_id'], keep='first')
     item_cnts = temp.groupby(['item_id']).size().reset_index()
     item_cnts.columns = ['item_id', 'cnts']
