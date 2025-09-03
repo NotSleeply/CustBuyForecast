@@ -15,7 +15,7 @@ def get_preprocessing(df_):
     """
     df = df_.copy()
     df = split_time_get_preprocessing(df)
-
+    df = del_buyer_country_id(df)
     return df
 
 
