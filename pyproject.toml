@@ -3,6 +3,7 @@ name = "CustBuyForecast"
 version = "0.1.0"
 license = "MIT"
 dependencies = [
+    "gensim>=4.3.3",
     "ipykernel>=6.30.1",
     "lightgbm>=4.6.0",
     "matplotlib>=3.10.5",

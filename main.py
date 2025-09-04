@@ -11,8 +11,8 @@ import warnings
 import pandas as pd
 from src.preprocessing import get_preprocessing, load_data
 from src.knn_recommend import knn_recommend
-from src.feature_engineering import add_features_main
 from src.save_result import save_submission
+from src.recall_sort import recall_sort_recommend
 
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -29,12 +29,12 @@ print("数据预处理完成。")
 
 # 3. 特征工程
 print("开始特征工程...")
-train = add_features_main(train)
-test = add_features_main(test)
+# train = add_features_main(train)
+# test = add_features_main(test)
 print("特征工程完成。")
 
 # 4. 推荐算法
-dic = knn_recommend(train, test)
+dic = recall_sort_recommend(train, test)
 
 # 5. 生成提交文件
 save_submission(dic)
