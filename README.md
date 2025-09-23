@@ -124,10 +124,6 @@ MRR是一个常用的评估指标，特别是在**推荐系统**和**信息检�
 - [TIANCHI安泰杯 —跨境电商智能算法大赛Baseline - 知乎](https://zhuanlan.zhihu.com/p/74119672)
 - [安泰杯 —— 跨境电商智能算法大赛 笔记 - 知乎](https://zhuanlan.zhihu.com/p/700491643)
 
-
-
-
-
 # 文件结构
 
 ```shell
